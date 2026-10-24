@@ -72,8 +72,8 @@ def quality_checks() -> dict:
 
 
 @flow(name="pipeline-rag", log_prints=True)
-def rag_pipeline(shards: list[int] = [16], max_docs: int = 2000, embed_actors: int = 2,
-                 skip_collect: bool = False) -> dict:
+def rag_pipeline(shards: list[int] = [16], max_docs: int = 2000,
+                 embed_actors: int = settings.embed_actors, skip_collect: bool = False) -> dict:
     """Pipeline complet. `skip_collect=True` vectorise seulement les documents déjà en base."""
     run_id = postgres.start_run(flow_run.id, [] if skip_collect else shards)
     counters: dict[str, int] = {}
@@ -96,7 +96,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Lance un run du pipeline RAG")
     parser.add_argument("--shards", type=int, nargs="+", default=[16])
     parser.add_argument("--max-docs", type=int, default=2000)
-    parser.add_argument("--embed-actors", type=int, default=2)
+    parser.add_argument("--embed-actors", type=int, default=settings.embed_actors)
     parser.add_argument("--skip-collect", action="store_true")
     args = parser.parse_args()
     rag_pipeline(args.shards, args.max_docs, args.embed_actors, args.skip_collect)

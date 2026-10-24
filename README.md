@@ -20,7 +20,7 @@ flowchart LR
         A[Collecte<br/>Airbyte source-file] --> R[(PostgreSQL<br/>schéma raw)]
         R --> S[Staging SQL<br/>nettoyage + dédoublonnage]
         S --> D[(PostgreSQL<br/>documents)]
-        D --> RAY[Ray Data<br/>découpage + embeddings<br/>1 head + 2 workers]
+        D --> RAY[Ray Data<br/>découpage + embeddings<br/>1 head + N workers]
         RAY --> Q[(Qdrant<br/>vecteurs + texte)]
         RAY --> C[(PostgreSQL<br/>chunks)]
         Q --> QC[Contrôles qualité]
@@ -39,7 +39,7 @@ flowchart LR
 | Orchestration | **Prefect 3** | Enchaîne les étapes, gère les reprises sur erreur, la planification et l'historique | `src/ragpipe/orchestration/` |
 | Stockage relationnel | **PostgreSQL 16** | Zone brute, documents nettoyés, métadonnées des chunks, suivi des runs et des questions | `sql/init/`, `src/ragpipe/storage/postgres.py`, `staging.py` |
 | Stockage NoSQL | **Qdrant** | Base vectorielle : 1 point par passage (vecteur 384 dimensions, texte, titre, URL) | `src/ragpipe/storage/qdrant_store.py` |
-| Traitement | **Ray** (Ray Data) | Découpage et embeddings distribués sur un cluster (1 nœud head + 2 workers) | `src/ragpipe/processing/` |
+| Traitement | **Ray** (Ray Data) | Découpage et embeddings distribués sur un cluster (1 nœud head + N workers) | `src/ragpipe/processing/` |
 | Visualisation | **Gradio** | Assistant de questions-réponses, recherche sémantique, tableau de bord du pipeline | `src/ragpipe/app/` |
 | Génération | Ollama (`qwen2.5:7b`) | Rédige la réponse à partir des passages retrouvés | `src/ragpipe/retrieval/` |
 
@@ -50,7 +50,7 @@ flowchart LR
    alimente `documents`. Un article modifié repasse en « à vectoriser » grâce à son empreinte md5.
    La zone brute est ensuite vidée.
 3. **Vectorisation** : Prefect soumet un job au cluster Ray. Ray lit les documents par plages,
-   les découpe en passages d'environ 1 000 caractères (150 de chevauchement) et calcule les
+   les découpe en passages d'environ 500 caractères (75 de chevauchement, car le modèle ne lit que 128 tokens) et calcule les
    embeddings avec un pool d'acteurs, chacun chargeant le modèle une seule fois. Il écrit ensuite
    les vecteurs dans Qdrant et les métadonnées dans PostgreSQL.
 4. **Contrôles** : on vérifie que PostgreSQL et Qdrant contiennent le même nombre de passages.
@@ -79,7 +79,9 @@ Elle reprend l'ordre du tableau d'inscription. Chacun est responsable d'une briq
 
 ### Prérequis
 
-- **Docker Desktop**, avec au moins 8 Go de RAM alloués (Réglages → Resources).
+- **Docker Desktop**, avec au moins **8 Go de RAM** alloués (Réglages → Resources) pour la configuration
+  par défaut (1 worker Ray). Comptez environ 1,5 Go de plus par worker supplémentaire, et pensez aux
+  autres conteneurs qui tournent déjà dans Docker (`docker stats`).
 - **Ollama** installé sur la machine (<https://ollama.com>), avec le modèle de génération téléchargé :
 
 ```bash
@@ -124,7 +126,7 @@ l'application et posez une question.
 - **En ligne de commande**, avec tous les paramètres :
 
 ```bash
-docker compose exec pipeline python -m ragpipe.orchestration.flows --shards 14 15 --max-docs 20000 --embed-actors 2
+docker compose exec pipeline python -m ragpipe.orchestration.flows --shards 14 15 --max-docs 20000
 ```
 
 - **Vectoriser seulement** les documents déjà collectés :
@@ -141,7 +143,7 @@ make run-quick
 | `make logs` | Logs de tous les services |
 | `make down` | Arrête les services (les données sont conservées) |
 | `make reset` | Arrête tout **et efface** PostgreSQL et Qdrant |
-| `docker compose up -d --scale ray-worker=4` | Ajoute des workers Ray |
+| `docker compose up -d --scale ray-worker=2` | Change le nombre de workers Ray à chaud (penser à `--embed-actors 2`) |
 
 ## Passage à l'échelle
 
@@ -149,8 +151,8 @@ make run-quick
 |---|---|---|
 | `shards` | Prefect / CLI | Nombre de fichiers collectés (17 au total, ~150 000 articles chacun) |
 | `max_docs` | Prefect / CLI | Documents vectorisés par run. Les runs suivants reprennent où le précédent s'est arrêté |
-| `ray-worker` replicas | `docker-compose.yml` | Nombre de workers Ray (3 CPU chacun : 1 acteur d'embedding + lecture/écriture) |
-| `embed_actors` | Prefect / CLI | Acteurs d'embedding en parallèle (2 CPU chacun) |
+| `RAY_WORKERS` | `.env` | Nombre de workers Ray (3 CPU et ~1,5 Go chacun : 1 acteur d'embedding + lecture/écriture) |
+| `EMBED_ACTORS` | `.env`, Prefect, CLI (`--embed-actors`) | Acteurs d'embedding en parallèle : 1 par worker |
 
 ### Premières mesures
 
@@ -159,16 +161,17 @@ Mesures prises sur un MacBook (10 cœurs, 8 Go alloués à Docker), avec le fich
 | Étape | Volume | Durée |
 |---|---|---|
 | Collecte Airbyte + staging | 150 861 articles lus, 112 313 retenus (≥ 500 caractères) | ~2 min |
-| Vectorisation Ray, 2 workers | 2 000 articles → 8 349 passages | 347 s (~24 passages/s) |
+| Vectorisation Ray, 1 worker | 1 700 articles → 12 102 passages | 426 s (~28 passages/s) |
 
-À ce rythme, le fichier 16 complet (~450 000 passages) demanderait environ 5 heures, et le corpus
-entier plusieurs jours. C'est tout l'intérêt de distribuer le calcul. Mesure à faire pour le rapport :
-le débit avec 1, 2 puis 4 workers (`--scale ray-worker=N` et `--embed-actors N`).
+Un article donne en moyenne 7 passages. À ce rythme, le fichier 16 complet (~800 000 passages)
+demanderait environ 8 heures avec 1 worker, et le corpus entier plus d'une semaine : c'est tout
+l'intérêt de distribuer le calcul. Mesure à faire pour le rapport : le débit avec 1, 2 puis 4 workers
+(`RAY_WORKERS` et `EMBED_ACTORS` dans `.env`), sur une machine qui a assez de RAM.
 
 ## Structure du dépôt
 
 ```
-├── docker-compose.yml        8 services : postgres, qdrant, prefect-server, ray-head, 2 ray-worker, pipeline, app
+├── docker-compose.yml        services : postgres, qdrant, prefect-server, ray-head, ray-worker (×N), pipeline, app
 ├── Dockerfile                image Python unique pour tous les services du projet
 ├── requirements.txt          dépendances directes
 ├── requirements.lock         versions figées : toute l'équipe a exactement les mêmes
@@ -199,6 +202,6 @@ redémarrage du service, par exemple `docker compose restart app`, sans reconstr
 | Symptôme | Solution |
 |---|---|
 | « LLM injoignable » dans l'application | Vérifier qu'Ollama tourne (`ollama list`) et que le modèle de `.env` est téléchargé |
-| Tâches Ray « killed due to memory pressure » | Pas assez de RAM : réduire `--embed-actors` ou `ray-worker`, ou augmenter la mémoire de Docker. Garder `mem_limit` sur les nœuds Ray, sinon Ray mesure la RAM de toute la VM Docker |
+| Job Ray très lent ou en échec, « worker died » / « killed due to memory pressure » | Manque de RAM. Vérifier `docker exec ragpipe-ray-worker-1 cat /sys/fs/cgroup/memory.events` : `oom_kill` > 0 avec `max 0` signifie que c'est toute la VM Docker qui est pleine. Réduire `RAY_WORKERS`, arrêter les autres conteneurs ou augmenter la mémoire de Docker |
 | Port déjà utilisé | Changer le port de gauche dans `docker-compose.yml` (ex. `"5433:5432"`) |
 | Repartir de zéro | `make reset`, puis `docker compose up -d` |

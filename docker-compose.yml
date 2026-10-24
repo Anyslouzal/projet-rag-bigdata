@@ -58,14 +58,17 @@ services:
     <<: *app
     # --num-cpus=0 : le head coordonne (driver, ordonnanceur, dashboard) mais
     # n'exécute aucune tâche de calcul, qui partent toutes sur les workers.
+    # --memory fixe la RAM allouée aux tâches : sinon Ray la déduit de la mémoire
+    # libre au démarrage, et refuse de démarrer si les autres conteneurs démarrent en même temps.
     command: >
       ray start --head --port=6379 --dashboard-host=0.0.0.0
-      --num-cpus=0 --object-store-memory=500000000 --block
+      --num-cpus=0 --memory=1000000000 --object-store-memory=500000000 --block
     ports: ["8265:8265"]                # dashboard Ray + API Ray Jobs
     shm_size: 1gb
     # Limite explicite : sans elle, Ray mesure la RAM de toute la VM Docker
     # (partagée avec les autres conteneurs) et tue ses tâches à tort.
-    mem_limit: 2g
+    mem_limit: 3g
+    restart: on-failure
     depends_on:
       postgres: { condition: service_healthy }
       qdrant: { condition: service_started }
@@ -74,11 +77,12 @@ services:
     <<: *app
     command: >
       ray start --address=ray-head:6379
-      --num-cpus=3 --object-store-memory=500000000 --block
+      --num-cpus=3 --memory=2000000000 --object-store-memory=500000000 --block
     shm_size: 1gb
     mem_limit: 3g                       # 1 acteur d'embedding (2 CPU) + lecture/écriture (1 CPU)
+    restart: on-failure
     deploy:
-      replicas: 2                       # augmenter pour montrer le passage à l'échelle
+      replicas: ${RAY_WORKERS:-1}       # voir .env : ~1,5 Go de RAM Docker par worker en plus
     depends_on: [ray-head]
 
   pipeline:

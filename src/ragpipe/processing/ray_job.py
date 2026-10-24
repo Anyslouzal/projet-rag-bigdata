@@ -66,7 +66,7 @@ class EmbedChunks:
     def __call__(self, batch: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
         # Le titre est ajouté au texte : un passage seul perd souvent son sujet
         texts = [f"{title}\n{text}" for title, text in zip(batch["title"], batch["text"])]
-        batch["vector"] = self.embedder.embed(texts)
+        batch["vector"] = self.embedder.embed(texts, batch_size=32)
         return batch
 
 
@@ -113,20 +113,32 @@ def run(max_docs: int, docs_per_task: int, embed_actors: int, threads: int) -> d
                      batch_size=128, num_cpus=threads, concurrency=embed_actors)
         .map_batches(WriteChunks, batch_size=256, num_cpus=0.5, concurrency=1)
     )
-    n_chunks = int(ds.sum("written") or 0)
+    # Lire le flux déclenche l'exécution ; on compte au passage les chunks écrits
+    n_chunks = sum(int(b["written"].sum()) for b in ds.iter_batches(batch_format="numpy"))
     n_marked = postgres.mark_indexed(lo, hi)
     return {"docs": n_marked, "chunks": n_chunks, "seconds": round(time.time() - start, 1)}
+
+
+def wait_for_workers(min_cpus: float, timeout_s: int = 120) -> None:
+    """Attend que les workers aient rejoint le cluster (le head n'a aucun CPU de calcul)."""
+    deadline = time.time() + timeout_s
+    while ray.cluster_resources().get("CPU", 0) < min_cpus:
+        if time.time() > deadline:
+            raise RuntimeError(f"Moins de {min_cpus} CPU dans le cluster Ray après {timeout_s} s")
+        time.sleep(2)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Vectorisation distribuée avec Ray Data")
     parser.add_argument("--max-docs", type=int, default=2000, help="documents à traiter dans ce run")
     parser.add_argument("--docs-per-task", type=int, default=200, help="documents lus par tâche Ray")
-    parser.add_argument("--embed-actors", type=int, default=2, help="acteurs d'embedding en parallèle")
+    parser.add_argument("--embed-actors", type=int, default=settings.embed_actors,
+                        help="acteurs d'embedding en parallèle (1 par worker)")
     parser.add_argument("--threads", type=int, default=2, help="threads CPU par acteur d'embedding")
     args = parser.parse_args()
 
     ray.init()  # se connecte au cluster existant (ou en démarre un local)
+    wait_for_workers(min_cpus=args.threads * args.embed_actors)
     result = run(args.max_docs, args.docs_per_task, args.embed_actors, args.threads)
     # Ligne lue par Prefect pour récupérer le résultat du job
     print("RESULT " + json.dumps(result))

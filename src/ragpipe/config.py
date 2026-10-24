@@ -38,8 +38,9 @@ class Settings:
     embedding_model: str = _env(
         "EMBEDDING_MODEL", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     )
-    chunk_max_chars: int = int(_env("CHUNK_MAX_CHARS", "1000"))
-    chunk_overlap: int = int(_env("CHUNK_OVERLAP", "150"))
+    chunk_max_chars: int = int(_env("CHUNK_MAX_CHARS", "500"))
+    chunk_overlap: int = int(_env("CHUNK_OVERLAP", "75"))
+    embed_actors: int = int(_env("EMBED_ACTORS", "1"))  # 1 par worker Ray
 
     # LLM (toute API compatible OpenAI : Ollama, Mistral, Groq, OpenAI...)
     llm_base_url: str = _env("LLM_BASE_URL", "http://localhost:11434/v1")
