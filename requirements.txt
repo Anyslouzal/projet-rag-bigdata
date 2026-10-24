@@ -1,0 +1,14 @@
+# Collecte
+airbyte>=0.30            # PyAirbyte : exécute les connecteurs Airbyte en Python
+# Orchestration
+prefect>=3.4
+# Traitement distribué
+ray[default,data]>=2.50
+fastembed>=0.7           # embeddings ONNX sur CPU (pas besoin de torch)
+# Stockage
+psycopg[binary,pool]>=3.2
+qdrant-client>=1.15
+# Visualisation
+gradio>=5.40
+# Tests
+pytest>=8

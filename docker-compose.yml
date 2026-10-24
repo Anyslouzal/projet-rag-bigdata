@@ -1,0 +1,103 @@
+# Pipeline RAG Big Data : Airbyte -> PostgreSQL -> Ray -> Qdrant -> Gradio, orchestré par Prefect.
+#
+#   docker compose up -d --build        démarre tout
+#   docker compose ps                   état des services
+#   docker compose logs -f pipeline     logs d'un service
+#
+# Le LLM (Ollama) tourne sur la machine hôte, pas dans Docker : voir README.
+
+name: ragpipe
+
+x-app: &app
+  image: ragpipe:dev
+  build: .
+  env_file: .env
+  volumes:
+    - ./src:/app/src          # le code est monté : pas besoin de reconstruire l'image à chaque modif
+    - ./tests:/app/tests
+  extra_hosts:
+    - "host.docker.internal:host-gateway"   # accès à Ollama sur l'hôte (Linux)
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports: ["5432:5432"]
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./sql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      retries: 20
+
+  qdrant:
+    image: qdrant/qdrant:v1.20.0
+    ports: ["6333:6333", "6334:6334"]   # 6333 : API REST + dashboard (/dashboard)
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+  prefect-server:
+    <<: *app
+    command: prefect server start --host 0.0.0.0
+    environment:
+      PREFECT_API_DATABASE_CONNECTION_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/prefect
+      PREFECT_UI_API_URL: http://localhost:4200/api
+    ports: ["4200:4200"]
+    depends_on:
+      postgres: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:4200/api/health"]
+      interval: 5s
+      retries: 30
+
+  ray-head:
+    <<: *app
+    # --num-cpus=0 : le head coordonne (driver, ordonnanceur, dashboard) mais
+    # n'exécute aucune tâche de calcul, qui partent toutes sur les workers.
+    command: >
+      ray start --head --port=6379 --dashboard-host=0.0.0.0
+      --num-cpus=0 --object-store-memory=500000000 --block
+    ports: ["8265:8265"]                # dashboard Ray + API Ray Jobs
+    shm_size: 1gb
+    # Limite explicite : sans elle, Ray mesure la RAM de toute la VM Docker
+    # (partagée avec les autres conteneurs) et tue ses tâches à tort.
+    mem_limit: 2g
+    depends_on:
+      postgres: { condition: service_healthy }
+      qdrant: { condition: service_started }
+
+  ray-worker:
+    <<: *app
+    command: >
+      ray start --address=ray-head:6379
+      --num-cpus=3 --object-store-memory=500000000 --block
+    shm_size: 1gb
+    mem_limit: 3g                       # 1 acteur d'embedding (2 CPU) + lecture/écriture (1 CPU)
+    deploy:
+      replicas: 2                       # augmenter pour montrer le passage à l'échelle
+    depends_on: [ray-head]
+
+  pipeline:
+    <<: *app
+    command: python -m ragpipe.orchestration.serve
+    environment:
+      PREFECT_API_URL: http://prefect-server:4200/api
+    depends_on:
+      prefect-server: { condition: service_healthy }
+      ray-head: { condition: service_started }
+
+  app:
+    <<: *app
+    command: python -m ragpipe.app.main
+    ports: ["7860:7860"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      qdrant: { condition: service_started }
+
+volumes:
+  pg_data:
+  qdrant_data:
