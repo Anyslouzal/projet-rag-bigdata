@@ -1,0 +1,662 @@
+{
+  "summary": {
+    "questions": 60,
+    "hit@1": 0.867,
+    "hit@5": 0.933,
+    "hit@10": 0.95,
+    "mrr@10": 0.899,
+    "passage_exact@5": 0.7,
+    "retrieval_ms_median": 139.8,
+    "retrieval_ms_p95": 270.8,
+    "llm_model": "qwen2.5:7b",
+    "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "generation_runs": 5,
+    "first_token_s_median": 4.72,
+    "total_s_median": 7.9,
+    "answers_with_citations": 5
+  },
+  "retrieval": [
+    {
+      "question": "Quel type de navire était Anna-Rosa et à quel usage servait-il durant de nombreuses années ?",
+      "title": "Anna-Rosa",
+      "doc_id": 201,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Anna-Rosa",
+      "top1_score": 0.721,
+      "retrieval_ms": 235.9
+    },
+    {
+      "question": "Quel type de transport est caractérisé par une longueur de Froude faible ?",
+      "title": "Efficacité énergétique dans les transports",
+      "doc_id": 1041,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Efficacité énergétique dans les transports",
+      "top1_score": 0.708,
+      "retrieval_ms": 114.3
+    },
+    {
+      "question": "Quel partenaire a proposé à la WTC d'organiser la nouvelle épreuve de triathlon après la non-renouvellement de la licence d'Ironman Europe à Roth ?",
+      "title": "Ironman Allemagne",
+      "doc_id": 362,
+      "rank": 1,
+      "passage_found": false,
+      "top1_title": "Ironman Allemagne",
+      "top1_score": 0.74,
+      "retrieval_ms": 94.1
+    },
+    {
+      "question": "Quel année a été introduit le suivi de partition séparément par Barry Vercoe et Roger Dannenberg ?",
+      "title": "Suivi de partition",
+      "doc_id": 62,
+      "rank": 1,
+      "passage_found": false,
+      "top1_title": "Suivi de partition",
+      "top1_score": 0.513,
+      "retrieval_ms": 117.1
+    },
+    {
+      "question": "Quel(s) pays(s) a remporté une médaille masculine aux Championnats d'Europe de saut en hauteur en 2015 ?",
+      "title": "Giovanni Tocci",
+      "doc_id": 97,
+      "rank": null,
+      "passage_found": false,
+      "top1_title": "Championnat d'Europe de Chanbara",
+      "top1_score": 0.72,
+      "retrieval_ms": 423.7
+    },
+    {
+      "question": "Quel score a-t-on obtenu lors du match opposant l'US Athlétique à un autre club lors de la saison 1936-1937 de la Ligue du Maroc de football ?",
+      "title": "Ligue du Maroc de football 1936-1937",
+      "doc_id": 739,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Ligue du Maroc de football 1936-1937",
+      "top1_score": 0.786,
+      "retrieval_ms": 113.8
+    },
+    {
+      "question": "Quelle fonction a occupé Germaine Duparc au collège Calvin de 1940 à 1975 ?",
+      "title": "Germaine Duparc",
+      "doc_id": 1602,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Germaine Duparc",
+      "top1_score": 0.639,
+      "retrieval_ms": 255.4
+    },
+    {
+      "question": "Quel est le premier match amical de Tomáš Koubek avec l'équipe de Tchéquie ?",
+      "title": "Tomáš Koubek",
+      "doc_id": 741,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Tomáš Koubek",
+      "top1_score": 0.797,
+      "retrieval_ms": 158.0
+    },
+    {
+      "question": "Quelles étaient les performances des coureuses lors du contre-la-montre du Tour d'Italie féminin 2016 ?",
+      "title": "Tour d'Italie féminin 2016",
+      "doc_id": 253,
+      "rank": 1,
+      "passage_found": false,
+      "top1_title": "Tour d'Italie féminin 2016",
+      "top1_score": 0.797,
+      "retrieval_ms": 1286.4
+    },
+    {
+      "question": "Quel titre a remporté Bernhard Winkler avec le FC Kaiserslautern en 1991 ?",
+      "title": "Bernhard Winkler",
+      "doc_id": 390,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Bernhard Winkler",
+      "top1_score": 0.796,
+      "retrieval_ms": 189.9
+    },
+    {
+      "question": "Combien de concerts a totalisé Charlie Vitamine selon l'extrait ?",
+      "title": "Charlie Vitamine",
+      "doc_id": 1261,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Charlie Vitamine",
+      "top1_score": 0.779,
+      "retrieval_ms": 173.7
+    },
+    {
+      "question": "Quel taux d'électrification a la flotte automobile norvégienne grâce à la politique fiscale du pays ?",
+      "title": "Environnement en Norvège",
+      "doc_id": 1979,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Environnement en Norvège",
+      "top1_score": 0.759,
+      "retrieval_ms": 116.3
+    },
+    {
+      "question": "Quelle était la situation religieuse de l'father d'Ossip Hannibal lorsqu'il est arrivé en Russie ?",
+      "title": "Ossip Hannibal",
+      "doc_id": 1696,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Ossip Hannibal",
+      "top1_score": 0.725,
+      "retrieval_ms": 145.4
+    },
+    {
+      "question": "Quel titre occupait le maire de Blois temporairement selon la Constitution du 5 fructidor an III ?",
+      "title": "Liste des maires de Blois",
+      "doc_id": 329,
+      "rank": 1,
+      "passage_found": false,
+      "top1_title": "Liste des maires de Blois",
+      "top1_score": 0.719,
+      "retrieval_ms": 145.2
+    },
+    {
+      "question": "Quelles années ont vu l'adaptation de Pride and Prejudice dans différents pays ?",
+      "title": "Jane Austen dans la culture populaire",
+      "doc_id": 293,
+      "rank": null,
+      "passage_found": false,
+      "top1_title": "Sommet France-Afrique",
+      "top1_score": 0.528,
+      "retrieval_ms": 104.1
+    },
+    {
+      "question": "Quelles sont les principales victoires de l'équipe cycliste Saint-Raphaël aux Championnats du monde ?",
+      "title": "Équipe cycliste Saint-Raphaël",
+      "doc_id": 910,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Équipe cycliste Saint-Raphaël",
+      "top1_score": 0.627,
+      "retrieval_ms": 104.5
+    },
+    {
+      "question": "Quel est le métier d'Alfred Cadart à l'origine du renouveau de l'eau-forte en France ?",
+      "title": "Alfred Cadart",
+      "doc_id": 473,
+      "rank": 1,
+      "passage_found": false,
+      "top1_title": "Alfred Cadart",
+      "top1_score": 0.676,
+      "retrieval_ms": 201.5
+    },
+    {
+      "question": "Quel est le lieu de son décès pour Éloi Leclerc ?",
+      "title": "Éloi Leclerc",
+      "doc_id": 843,
+      "rank": 3,
+      "passage_found": false,
+      "top1_title": "Michel Sauvalle",
+      "top1_score": 0.645,
+      "retrieval_ms": 152.4
+    },
+    {
+      "question": "À quelle distance se trouve Jeníkovice par rapport à Třebechovice pod Orebem ?",
+      "title": "Jeníkovice (district de Hradec Králové)",
+      "doc_id": 1244,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Jeníkovice (district de Hradec Králové)",
+      "top1_score": 0.664,
+      "retrieval_ms": 94.8
+    },
+    {
+      "question": "Quelle est la teneur en alcool de la bière Ommegang Charles Quint ?",
+      "title": "Charles Quint (bière)",
+      "doc_id": 1402,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Charles Quint (bière)",
+      "top1_score": 0.822,
+      "retrieval_ms": 171.8
+    },
+    {
+      "question": "Quel type de livre Oskar souhaite-t-il écrire après avoir changé de vie sous l'influence de la psychologue ?",
+      "title": "Les truands cuisinent",
+      "doc_id": 734,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Les truands cuisinent",
+      "top1_score": 0.704,
+      "retrieval_ms": 152.8
+    },
+    {
+      "question": "Quel rôle crucial jouait l'entrée d'air dans le fonctionnement du moteur en raison des hautes vitesses visées ?",
+      "title": "De Havilland Gyron",
+      "doc_id": 250,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "De Havilland Gyron",
+      "top1_score": 0.732,
+      "retrieval_ms": 146.0
+    },
+    {
+      "question": "Dans quel pays est né Rúnar Már Sigurjónsson ?",
+      "title": "Rúnar Már Sigurjónsson",
+      "doc_id": 657,
+      "rank": 1,
+      "passage_found": false,
+      "top1_title": "Rúnar Már Sigurjónsson",
+      "top1_score": 0.69,
+      "retrieval_ms": 147.5
+    },
+    {
+      "question": "Quel club repère Frank Anguissa en 2015 et avec lequel il effectue la préparation ?",
+      "title": "Frank Anguissa",
+      "doc_id": 1452,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Frank Anguissa",
+      "top1_score": 0.644,
+      "retrieval_ms": 113.8
+    },
+    {
+      "question": "Quelles études a effectuée Barbara Brylska ?",
+      "title": "Barbara Brylska",
+      "doc_id": 1765,
+      "rank": 10,
+      "passage_found": false,
+      "top1_title": "Élisabeth Lorans",
+      "top1_score": 0.583,
+      "retrieval_ms": 116.2
+    },
+    {
+      "question": "Combien d'équipes participent au championnat d'élite portugais cette saison ?",
+      "title": "Championnat du Portugal de football 2016-2017",
+      "doc_id": 1225,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Championnat du Portugal de football 2016-2017",
+      "top1_score": 0.768,
+      "retrieval_ms": 144.1
+    },
+    {
+      "question": "Quelle position a obtenu Nicholas Latifi au championnat avec neuf podiums ?",
+      "title": "Nicholas Latifi",
+      "doc_id": 982,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Nicholas Latifi",
+      "top1_score": 0.705,
+      "retrieval_ms": 78.8
+    },
+    {
+      "question": "Quels sont les premiers matchs où John Bostock a marqué pour le Racing Club de Lens ?",
+      "title": "John Bostock",
+      "doc_id": 13,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "John Bostock",
+      "top1_score": 0.675,
+      "retrieval_ms": 140.9
+    },
+    {
+      "question": "Quels personnages de salamandres sont nommément mentionnés dans le roman, et qui leur donne ces noms ?",
+      "title": "La Guerre des salamandres",
+      "doc_id": 1953,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "La Guerre des salamandres",
+      "top1_score": 0.73,
+      "retrieval_ms": 131.5
+    },
+    {
+      "question": "Quel est le domaine d'activité principal de Jean-Éric Schoettl selon l'extrait ?",
+      "title": "Jean-Éric Schoettl",
+      "doc_id": 375,
+      "rank": 2,
+      "passage_found": true,
+      "top1_title": "Karl Friedrich Mohr",
+      "top1_score": 0.598,
+      "retrieval_ms": 145.5
+    },
+    {
+      "question": "Qu'est-ce que l'attaque Sybil et comment peut-elle affecter les réseaux pairs à pairs ?",
+      "title": "Attaque Sybil",
+      "doc_id": 1076,
+      "rank": 1,
+      "passage_found": false,
+      "top1_title": "Attaque Sybil",
+      "top1_score": 0.814,
+      "retrieval_ms": 168.5
+    },
+    {
+      "question": "Quels sont les noms des contributeurs au journal Biscoto créée en 2013 ?",
+      "title": "Biscoto (journal)",
+      "doc_id": 1716,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Biscoto (journal)",
+      "top1_score": 0.638,
+      "retrieval_ms": 110.3
+    },
+    {
+      "question": "Quelles sont les informations personnelles de Olivier Schmitz mentionnées dans cet extrait ?",
+      "title": "Olivier Schmitz",
+      "doc_id": 1598,
+      "rank": 1,
+      "passage_found": false,
+      "top1_title": "Olivier Schmitz",
+      "top1_score": 0.574,
+      "retrieval_ms": 120.6
+    },
+    {
+      "question": "Quel est l'origine du titre de duc d'Audiffret-Pasquier ?",
+      "title": "Duc d'Audiffret-Pasquier",
+      "doc_id": 965,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Duc d'Audiffret-Pasquier",
+      "top1_score": 0.708,
+      "retrieval_ms": 76.8
+    },
+    {
+      "question": "Quelle date a été fixée pour la sortie européenne de The Elder Scrolls IV: Oblivion sur les consoles Xbox 360 et PlayStation 3 ?",
+      "title": "Développement de The Elder Scrolls IV: Oblivion",
+      "doc_id": 1477,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Développement de The Elder Scrolls IV: Oblivion",
+      "top1_score": 0.867,
+      "retrieval_ms": 121.5
+    },
+    {
+      "question": "Quelle voïvodie fait désormais partie de Nędzerzew en 1999 ?",
+      "title": "Nędzerzew (Łódź)",
+      "doc_id": 890,
+      "rank": null,
+      "passage_found": false,
+      "top1_title": "Viggo Starcke",
+      "top1_score": 0.596,
+      "retrieval_ms": 120.9
+    },
+    {
+      "question": "Quel poste a joué Mohamed Ounajem au Wydad AC ?",
+      "title": "Mohamed Ounajem",
+      "doc_id": 68,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Mohamed Ounajem",
+      "top1_score": 0.671,
+      "retrieval_ms": 81.1
+    },
+    {
+      "question": "Quelles sont les dimensions du bâtiment de l'église Saint-Jean-Baptiste de Novi Bečej ?",
+      "title": "Église Saint-Jean-Baptiste de Novi Bečej",
+      "doc_id": 400,
+      "rank": 2,
+      "passage_found": true,
+      "top1_title": "Église Saint-Nicolas de Novi Bečej",
+      "top1_score": 0.761,
+      "retrieval_ms": 112.2
+    },
+    {
+      "question": "Quel rôle a-t-il joué qui lui a valu le prix d'interprétation féminine au Festival de Cannes 2016 ?",
+      "title": "Jaclyn Jose",
+      "doc_id": 1838,
+      "rank": 1,
+      "passage_found": false,
+      "top1_title": "Jaclyn Jose",
+      "top1_score": 0.661,
+      "retrieval_ms": 150.3
+    },
+    {
+      "question": "Quels sont les différents chiffres avancés pour évaluer la baisse démographique des peuples autochtones selon les historiens mentionnés ?",
+      "title": "Génocide de peuples autochtones",
+      "doc_id": 52,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Génocide de peuples autochtones",
+      "top1_score": 0.757,
+      "retrieval_ms": 108.9
+    },
+    {
+      "question": "Quel était le coloris des uniformes dans les pays avec un climat chaud ?",
+      "title": "Uniforme du corps diplomatique",
+      "doc_id": 646,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Uniforme du corps diplomatique",
+      "top1_score": 0.598,
+      "retrieval_ms": 131.7
+    },
+    {
+      "question": "Qui devient finalement l'ambassadeur pour négocier l'élimination d'un candidat chez les jaunes ?",
+      "title": "Koh-Lanta : L'Île au trésor",
+      "doc_id": 1685,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Koh-Lanta : L'Île au trésor",
+      "top1_score": 0.565,
+      "retrieval_ms": 151.4
+    },
+    {
+      "question": "Quel est le premier film dans lequel Pauline Moore a joué au cinéma ?",
+      "title": "Pauline Moore",
+      "doc_id": 512,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Pauline Moore",
+      "top1_score": 0.746,
+      "retrieval_ms": 102.8
+    },
+    {
+      "question": "Quel type d'événement culturel a eu lieu dix fois au Théâtre d'Azur sous le nom de Sa m'aim ?",
+      "title": "Sa m'aim",
+      "doc_id": 1948,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Sa m'aim",
+      "top1_score": 0.654,
+      "retrieval_ms": 96.7
+    },
+    {
+      "question": "Quel type d'horloges étaient fréquentes dans les monastères et cathédrales à cette époque ?",
+      "title": "Horloge mécanique",
+      "doc_id": 1275,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Horloge mécanique",
+      "top1_score": 0.834,
+      "retrieval_ms": 139.5
+    },
+    {
+      "question": "Quel prix a remporté Zoran Boukherma en 2019 pour son scénario ?",
+      "title": "Zoran Boukherma",
+      "doc_id": 317,
+      "rank": 2,
+      "passage_found": true,
+      "top1_title": "Linda Cerruti",
+      "top1_score": 0.597,
+      "retrieval_ms": 270.8
+    },
+    {
+      "question": "Quelles œuvres a publié René La Bruyère entre 1902 et 1916 ?",
+      "title": "René La Bruyère",
+      "doc_id": 1927,
+      "rank": 1,
+      "passage_found": false,
+      "top1_title": "René La Bruyère",
+      "top1_score": 0.724,
+      "retrieval_ms": 132.7
+    },
+    {
+      "question": "Quelles sont les dates et lieux des expositions de Wang Wusheng entre 2000 et 2008 ?",
+      "title": "Wang Wusheng",
+      "doc_id": 569,
+      "rank": 1,
+      "passage_found": false,
+      "top1_title": "Wang Wusheng",
+      "top1_score": 0.716,
+      "retrieval_ms": 108.7
+    },
+    {
+      "question": "Quels sont les médailles olympiques remportées par Thomas Ebert en aviron ?",
+      "title": "Thomas Ebert",
+      "doc_id": 1098,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Thomas Ebert",
+      "top1_score": 0.693,
+      "retrieval_ms": 88.0
+    },
+    {
+      "question": "Quelle est la différence entre la définition étroite et la définition large des indigènes du Mexique ?",
+      "title": "Indigènes du Mexique",
+      "doc_id": 1807,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Indigènes du Mexique",
+      "top1_score": 0.781,
+      "retrieval_ms": 156.1
+    },
+    {
+      "question": "Quel est le premier poste important que Martin Bartenstein occupe dans l'entreprise familiale après son doctorat ?",
+      "title": "Martin Bartenstein",
+      "doc_id": 1326,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Martin Bartenstein",
+      "top1_score": 0.57,
+      "retrieval_ms": 103.4
+    },
+    {
+      "question": "Qu'est-ce que le doigt de Fatma et de quel pays est-il originaire ?",
+      "title": "Doigts de Fatma",
+      "doc_id": 806,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Doigts de Fatma",
+      "top1_score": 0.665,
+      "retrieval_ms": 181.5
+    },
+    {
+      "question": "Quelle année a été créée la série télévisée Haute Tension ?",
+      "title": "Haute Tension (série télévisée, 1996)",
+      "doc_id": 1674,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Haute Tension (série télévisée, 1996)",
+      "top1_score": 0.784,
+      "retrieval_ms": 427.2
+    },
+    {
+      "question": "Quel type de lecture utilise l'écriture découverte par Étienne Jaussen sur l'île ?",
+      "title": "Étienne Jaussen",
+      "doc_id": 1039,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Étienne Jaussen",
+      "top1_score": 0.758,
+      "retrieval_ms": 264.3
+    },
+    {
+      "question": "Où et quand est né William F. Wu ?",
+      "title": "William F. Wu",
+      "doc_id": 586,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "William F. Wu",
+      "top1_score": 0.685,
+      "retrieval_ms": 94.6
+    },
+    {
+      "question": "Quelles œuvres a enregistrées Walid Akl entre 1970 et 1995 ?",
+      "title": "Walid Akl",
+      "doc_id": 1172,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Walid Akl",
+      "top1_score": 0.662,
+      "retrieval_ms": 129.3
+    },
+    {
+      "question": "Quels titres a occupé Marguerite-Thérèse Rouillé de Meslay au cours de sa vie ?",
+      "title": "Marguerite-Thérèse Rouillé",
+      "doc_id": 1506,
+      "rank": 1,
+      "passage_found": false,
+      "top1_title": "Marguerite-Thérèse Rouillé",
+      "top1_score": 0.669,
+      "retrieval_ms": 169.1
+    },
+    {
+      "question": "Quelle est la famille à laquelle appartient l'espèce Procambridgea montana ?",
+      "title": "Procambridgea montana",
+      "doc_id": 1249,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Procambridgea montana",
+      "top1_score": 0.746,
+      "retrieval_ms": 190.2
+    },
+    {
+      "question": "Quelle planète abritait la Petite Tache sombre, également connue sous les noms de Tache sombre 2 ou Œil du Sorcier ?",
+      "title": "Petite Tache sombre",
+      "doc_id": 1828,
+      "rank": 1,
+      "passage_found": true,
+      "top1_title": "Petite Tache sombre",
+      "top1_score": 0.74,
+      "retrieval_ms": 193.1
+    },
+    {
+      "question": "Quel type de croisements a principalement réalisé Ferdinand Cayeux après la Première Guerre mondiale ?",
+      "title": "Ferdinand Cayeux",
+      "doc_id": 1160,
+      "rank": 1,
+      "passage_found": false,
+      "top1_title": "Ferdinand Cayeux",
+      "top1_score": 0.661,
+      "retrieval_ms": 140.1
+    }
+  ],
+  "generation": [
+    {
+      "question": "Quel type de navire était Anna-Rosa et à quel usage servait-il durant de nombreuses années ?",
+      "first_token_s": 4.06,
+      "total_s": 6.98,
+      "n_words": 32,
+      "cites_sources": true,
+      "answer": "Anna-Rosa était un caboteur à voile norvégien gréé en ketch [1][4]. Il servait au commerce de la rogue et de la morue séchée sur les côtes européennes durant de nombreuses années [1]."
+    },
+    {
+      "question": "Quel type de transport est caractérisé par une longueur de Froude faible ?",
+      "first_token_s": 4.72,
+      "total_s": 7.9,
+      "n_words": 33,
+      "cites_sources": true,
+      "answer": "Selon l'extrait [2], les péniches et les porte-conteneurs sont caractérisés par une longueur de Froude faible, ce qui indique que ces types de transport sont à faible vitesse rapportée à leur longueur. [2]"
+    },
+    {
+      "question": "Quel partenaire a proposé à la WTC d'organiser la nouvelle épreuve de triathlon après la non-renouvellement de la licence d'Ironman Europe à Roth ?",
+      "first_token_s": 4.66,
+      "total_s": 10.84,
+      "n_words": 52,
+      "cites_sources": true,
+      "answer": "Les extraits fournis ne mentionnent pas explicitement de partenaire qui aurait proposé d'organiser la nouvelle épreuve de triathlon après la non-renouvellement de la licence d'Ironman Europe à Roth. Les informations fournies portent principalement sur les événements Ironman en Allemagne, Suisse et Autriche, sans donner de détails sur les négociations concernant Roth. [1][2][3][4][5]"
+    },
+    {
+      "question": "Quel année a été introduit le suivi de partition séparément par Barry Vercoe et Roger Dannenberg ?",
+      "first_token_s": 5.8,
+      "total_s": 6.18,
+      "n_words": 2,
+      "cites_sources": true,
+      "answer": "1984 [1]"
+    },
+    {
+      "question": "Quel(s) pays(s) a remporté une médaille masculine aux Championnats d'Europe de saut en hauteur en 2015 ?",
+      "first_token_s": 5.72,
+      "total_s": 11.33,
+      "n_words": 51,
+      "cites_sources": true,
+      "answer": "D'après les extraits fournis, il n'est pas mentionné de Championnats d'Europe de saut en hauteur en 2015 ni d'information concernant un pays qui aurait remporté une médaille masculine dans cette discipline. Les extraits traitent de compétitions de rink hockey, de handball et de rugby, mais pas de saut en hauteur. [1][2][3][4][5]"
+    }
+  ]
+}

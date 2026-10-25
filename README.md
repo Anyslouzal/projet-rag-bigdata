@@ -10,6 +10,15 @@ répond ensuite aux questions en citant ses sources : c'est le principe du RAG
 Le corpus complet compte environ **2,6 millions d'articles**, répartis en 17 fichiers parquet
 (~5 Go compressés). Le pipeline traite ce volume par lots, de façon incrémentale.
 
+## Documents du projet
+
+| Document | Fichiers |
+|---|---|
+| Rapport (19 pages) | [Word](docs/Rapport_Groupe6_Pipeline_RAG.docx) · [PDF](docs/Rapport_Groupe6_Pipeline_RAG.pdf) |
+| Présentation (15 slides, avec notes de l'orateur) | [PowerPoint](docs/Presentation_Groupe6_Pipeline_RAG.pptx) · [PDF](docs/Presentation_Groupe6_Pipeline_RAG.pdf) |
+| Résultats de l'évaluation (60 questions) | [docs/evaluation/resultats.json](docs/evaluation/resultats.json) |
+| Schéma d'architecture et captures d'écran | [docs/images/](docs/images/) |
+
 ## Architecture
 
 ```mermaid
@@ -73,7 +82,7 @@ Elle reprend l'ordre du tableau d'inscription. Chacun est responsable d'une briq
 | Imad Eddine El Khorassani | Stockage NoSQL (Qdrant) | `storage/qdrant_store.py` | Réglages HNSW, quantification, filtres, mesure mémoire et latence |
 | Mohammed Yassine Benmeziane | Traitement distribué (Ray) | `processing/` | Benchmark de 1 à N workers, réglage des acteurs et des lots, tolérance aux pannes |
 | Anys Louzal | Visualisation et partage (Gradio) | `app/` | Graphiques de suivi, filtres, partage public (`share=True` ou Hugging Face Spaces) |
-| Mohamed Anouar Faress | Couche RAG et évaluation | `retrieval/` | Prompt, re-ranking, jeu de questions de test, métriques de qualité |
+| Mohamed Anouar Faress | Couche RAG et évaluation | `retrieval/`, `evaluation/` | Prompt, re-ranking, questions écrites à la main, fidélité des réponses |
 
 ## Démarrage
 
@@ -140,6 +149,7 @@ make run-quick
 | Commande | Effet |
 |---|---|
 | `make test` | Tests unitaires |
+| `make eval` | Évalue la recherche et la génération sur 60 questions de test (~5 min) |
 | `make logs` | Logs de tous les services |
 | `make down` | Arrête les services (les données sont conservées) |
 | `make reset` | Arrête tout **et efface** PostgreSQL et Qdrant |
@@ -165,8 +175,20 @@ Mesures prises sur un MacBook (10 cœurs, 8 Go alloués à Docker), avec le fich
 
 Un article donne en moyenne 7 passages. À ce rythme, le fichier 16 complet (~800 000 passages)
 demanderait environ 8 heures avec 1 worker, et le corpus entier plus d'une semaine : c'est tout
-l'intérêt de distribuer le calcul. Mesure à faire pour le rapport : le débit avec 1, 2 puis 4 workers
+l'intérêt de distribuer le calcul. Mesure encore à faire : le débit avec 1, 2 puis 4 workers
 (`RAY_WORKERS` et `EMBED_ACTORS` dans `.env`), sur une machine qui a assez de RAM.
+
+### Qualité de la recherche
+
+`make eval` tire 60 passages au hasard dans l'index (un par article), demande au LLM d'écrire une
+question pour chacun, puis vérifie si la recherche retrouve l'article d'origine. Sur l'index actuel
+(2 000 articles, 14 290 passages) :
+
+| Hit@1 | Hit@5 | Hit@10 | MRR@10 | Recherche (médiane) | Réponse complète (médiane) |
+|---:|---:|---:|---:|---:|---:|
+| 86,7 % | 93,3 % | 95,0 % | 0,899 | 140 ms | 7,9 s |
+
+Ces scores sont optimistes : les questions sont proches du texte des passages et l'index est petit.
 
 ## Structure du dépôt
 
@@ -183,8 +205,10 @@ l'intérêt de distribuer le calcul. Mesure à faire pour le rapport : le débit
 │   ├── processing/           découpage, embeddings, job Ray
 │   ├── retrieval/            recherche sémantique + appel au LLM
 │   ├── orchestration/        flow et déploiement Prefect
+│   ├── evaluation/           évaluation de la recherche et de la génération
 │   └── app/                  application Gradio
-└── tests/                    tests unitaires (pytest)
+├── tests/                    tests unitaires (pytest)
+└── docs/                     rapport, présentation, figures, résultats d'évaluation
 ```
 
 Le dossier `src/` est monté dans les conteneurs. Une modification du code est prise en compte au

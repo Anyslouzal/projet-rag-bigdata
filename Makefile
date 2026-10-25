@@ -1,5 +1,5 @@
-# Raccourcis : make up | make run | make test | make logs | make down
-.PHONY: up run run-quick test logs ps down reset
+# Raccourcis : make up | make run | make test | make eval | make logs | make down
+.PHONY: up run run-quick test eval logs ps down reset
 
 up:          ## Construit l'image et démarre tous les services
 	docker compose up -d --build
@@ -12,6 +12,9 @@ run-quick:   ## Vectorise 500 documents déjà collectés (sans nouvelle collect
 
 test:        ## Tests unitaires
 	docker compose run --rm --no-deps app pytest -q tests
+
+eval:        ## Évalue la recherche et la génération sur 60 questions de test (~5 min)
+	docker compose exec -T app python -m ragpipe.evaluation.retrieval_eval > docs/evaluation/resultats.json
 
 logs:
 	docker compose logs -f --tail=50
